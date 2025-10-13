@@ -20,13 +20,20 @@ function doGet(e) {
     // Lấy dữ liệu
     const data = sheet.getDataRange().getValues();
     const headers = data[0];
-    const rows = data.slice(1).map(row => {
-      const obj = {};
-      headers.forEach((header, i) => {
-        obj[header] = row[i];
+    const rows = data.slice(1)
+      .filter(row => row[0]) // Chỉ lấy các dòng có dữ liệu
+      .map(row => {
+        const obj = {};
+        headers.forEach((header, i) => {
+          // Đảm bảo giá trị rỗng được xử lý đúng
+          let value = row[i];
+          if (value === undefined || value === null || value === '') {
+            value = '';
+          }
+          obj[header] = value;
+        });
+        return obj;
       });
-      return obj;
-    });
     
     const result = {
       status: 'success',

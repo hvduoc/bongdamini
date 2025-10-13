@@ -566,12 +566,19 @@
                 const khoi = row.Khoi || row.khoi;
                 const doiA = row.DoiA || row.doiA;
                 const doiB = row.DoiB || row.doiB;
-                const tiSoA = row.TiSoA || row.tiSoA || '';
-                const tiSoB = row.TiSoB || row.tiSoB || '';
+                let tiSoA = row.TiSoA || row.tiSoA;
+                let tiSoB = row.TiSoB || row.tiSoB;
+                
+                // Xử lý giá trị tỉ số - chỉ chuyển thành chuỗi rỗng nếu undefined/null
+                tiSoA = (tiSoA === undefined || tiSoA === null) ? '' : String(tiSoA);
+                tiSoB = (tiSoB === undefined || tiSoB === null) ? '' : String(tiSoB);
                 
                 if (khoi && doiA && doiB) {
                   const k = key(khoi, doiA, doiB);
-                  newResults[k] = [String(tiSoA), String(tiSoB)];
+                  newResults[k] = [tiSoA, tiSoB];
+                  
+                  // Debug log để kiểm tra
+                  console.log(`Loaded: ${khoi} ${doiA} vs ${doiB} = ${tiSoA}:${tiSoB}`);
                 }
               });
               
