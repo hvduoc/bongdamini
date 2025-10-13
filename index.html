@@ -105,7 +105,7 @@
         <li><a href="#sodo">Sơ đồ</a></li>
         <li><a href="#album">Album</a></li>
       </ul>
-      <a class="btn secondary" href="Độc lập - Tự do - Hạnh phúc.pdf" download>📄 Tải kế hoạch</a>
+      <a class="btn secondary" href="kehoach.pdf" download>📄 Tải kế hoạch</a>
     </div>
   </nav>
 
@@ -376,23 +376,30 @@
       }
 
       function parseGroups() {
+        const defaultGroups = {
+          K4: [
+            {team:"4/1"},{team:"4/2"},{team:"4/3"},{team:"4/4"},{team:"4/5"},{team:"4/6"}
+          ],
+          K5: [
+            {team:"5/1"},{team:"5/2"},{team:"5/3"},{team:"5/4"},{team:"5/5"},{team:"5/6"}
+          ]
+        };
+
         try {
-          const parsed = JSON.parse($('#dataEditor').innerText);
+          const element = $('#dataEditor');
+          if (!element || !element.innerText.trim()) {
+            return defaultGroups;
+          }
+          
+          const parsed = JSON.parse(element.innerText.trim());
           const groups = parsed.groups || {};
           return {
-            K4: groups.K4 || [],
-            K5: groups.K5 || []
+            K4: groups.K4 || defaultGroups.K4,
+            K5: groups.K5 || defaultGroups.K5
           };
         } catch(e) {
-          console.error('Error parsing groups:', e);
-          return {
-            K4: [
-              {team:"4/1"},{team:"4/2"},{team:"4/3"},{team:"4/4"},{team:"4/5"},{team:"4/6"}
-            ],
-            K5: [
-              {team:"5/1"},{team:"5/2"},{team:"5/3"},{team:"5/4"},{team:"5/5"},{team:"5/6"}
-            ]
-          };
+          console.error('Error parsing groups, using defaults:', e);
+          return defaultGroups;
         }
       }
 
@@ -439,9 +446,18 @@
             });
           });
         });
+      }
+
+      function refreshAll() {
+        const groups = parseGroups();
+        renderFixtures(groups);
+        const withPts = pointsFromResults(groups);
+        renderStandings('A', withPts.K4);
+        renderStandings('B', withPts.K5);
+        drawBracket(withPts);
         
-        // Render knockout fixtures
-        renderKnockoutFixtures(groups);
+        // Render knockout fixtures với dữ liệu đã sắp xếp
+        renderKnockoutFixtures(withPts);
       }
 
       function renderKnockoutFixtures(groups) {
@@ -455,8 +471,7 @@
         const sf2Team1 = K5Top[0]?.team || '—'; // Nhất K5
         const sf2Team2 = K4Top[1]?.team || '—'; // Nhì K4
         
-        console.log(`Bán kết 1: ${sf1Team1} (Nhất K4) vs ${sf1Team2} (Nhì K5)`);
-        console.log(`Bán kết 2: ${sf2Team1} (Nhất K5) vs ${sf2Team2} (Nhì K4)`);
+
         
         const sf1Score = getScore('SF', sf1Team1, sf1Team2);
         const sf2Score = getScore('SF', sf2Team1, sf2Team2);
@@ -601,7 +616,7 @@
               stats[a].gd = stats[a].gf - stats[a].ga;
               stats[b].gd = stats[b].gf - stats[b].ga;
               
-              console.log(`Match: ${a} ${sa}-${sb} ${b} | ${a}: ${stats[a].pts}pts, ${b}: ${stats[b].pts}pts`);
+
             }
           });
         });
@@ -623,7 +638,6 @@
               return b.gf - a.gf;
             });
             
-          console.log(`Sorted teams:`, sorted.map(t => `${t.team}: ${t.pts}pts, ${t.gd}gd`));
           return sorted;
         };
         
@@ -662,8 +676,7 @@
         const K4Top = groups.K4.slice(0, 2);
         const K5Top = groups.K5.slice(0, 2);
         
-        console.log('K4 Top 2:', K4Top.map(t => `${t.team}: ${t.pts}pts`));
-        console.log('K5 Top 2:', K5Top.map(t => `${t.team}: ${t.pts}pts`));
+
         
         const svg = $('#bracket');
         while(svg.firstChild) svg.removeChild(svg.firstChild);
@@ -763,15 +776,6 @@
         box(640, 200, 'Vô địch', 'Chung kết');
         
         label(680, 240, '🏆 Vô địch');
-      }
-
-      function refreshAll() {
-        const groups = parseGroups();
-        renderFixtures(groups);
-        const withPts = pointsFromResults(groups);
-        renderStandings('A', withPts.K4);
-        renderStandings('B', withPts.K5);
-        drawBracket(withPts);
       }
 
       $('#toggleEdit').addEventListener('click', () => {
