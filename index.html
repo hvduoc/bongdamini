@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Giải Bóng Đá Mini | Trường Tiểu học Võ Thị Sáu</title>
   <meta name="description" content="Trang truyền thông Giải Bóng Đá Mini học sinh 2025–2026 – Trường Tiểu học Võ Thị Sáu, Q. Hải Châu, Đà Nẵng."/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -127,7 +128,7 @@
         </div>
       </div>
       <div>
-        <img class="photo" src="https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=1200&auto=format&fit=crop" alt="Học sinh chơi bóng đá"/>
+        <img class="photo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgey5OZRPuBGTMt9jpWEcAS7eYY7T_E-Bx39-YkTMso230nypsvsw30NQom6lLhEpi37mFt3QZxFX-zwFk6Y2NXQllpiS-GirXJRfvu9-9SDeYhw_NrK9s7vlQHPjI76s8-NhEfQ5oWd1p6-BTgY7XhZJ0Imr0f-gLCPXq8q5KNSFx6etKShLSMle1znC8/s600-rw/(%20Anhpnng.com%20)%20-%20BONG-DA%20(41).jpg" alt="Học sinh chơi bóng đá"/>
       </div>
     </div>
   </header>
@@ -205,7 +206,7 @@
         </div>
         <small style="color:#6d8daa">
           <strong>Chế độ Admin:</strong> Nhập PIN → Nhập tỉ số trên web → Nhấn "Đẩy lên Sheet" → Tự động lưu vào Google Sheet!<br/>
-          <strong>Chế độ Xem:</strong> Trang tự động tải tỉ số từ Google Sheet mỗi 15 giây (hoặc nhấn "Tải từ Sheet").
+          <strong>Chế độ Xem:</strong> Trang tự động tải tỉ số từ Google Sheet mỗi 1 phút (hoặc nhấn "Tải từ Sheet").
         </small>
         <div id="sheetStatus" style="margin-top:.5rem;padding:.5rem;border-radius:8px;display:none"></div>
       </div>
@@ -240,7 +241,21 @@
       </div>
 
       <div class="card" style="margin-top:1rem">
-        <h3>Nhánh đấu (Tứ kết → CK)</h3>
+        <h3>Nhập tỉ số vòng loại trực tiếp</h3>
+        <div class="grid-2">
+          <div>
+            <h4>Bán kết</h4>
+            <div id="knockoutFixtures"></div>
+          </div>
+          <div>
+            <h4>Chung kết & Tranh Ba</h4>
+            <div id="finalFixtures"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1rem">
+        <h3>Nhánh đấu (Bán kết → CK)</h3>
         <svg id="bracket" viewBox="0 0 800 360" style="width:100%;height:auto;border-radius:12px;background:#f8fbff;border:1px solid #e6eef7"></svg>
         <div class="chip" style="margin:.5rem 0 0">🏆 Chung kết 02/11/2025</div>
       </div>
@@ -325,7 +340,9 @@
       }
 
       function getScore(g, a, b) {
-        return results[key(g, a, b)] || ['', ''];
+        const k = key(g, a, b);
+        const score = results[k] || ['', ''];
+        return score;
       }
 
       function setScore(g, a, b, va, vb) {
@@ -334,11 +351,48 @@
         refreshAll();
       }
 
+      // Hàm xử lý người thắng bán kết
+      function getSemiFinalWinner(team1, team2, score) {
+        if (!team1 || !team2) return '—';
+        const [s1, s2] = score;
+        if (s1 === '' || s2 === '') return 'Chưa đấu';
+        const score1 = Number(s1);
+        const score2 = Number(s2);
+        if (score1 > score2) return team1;
+        if (score2 > score1) return team2;
+        return 'Hòa (luân lưu)'; // Trong thực tế cần luân lưu
+      }
+
+      // Hàm xử lý người thắng chung kết  
+      function getFinalWinner(winner1, winner2, score) {
+        if (winner1 === '—' || winner2 === '—' || winner1 === 'Chưa đấu' || winner2 === 'Chưa đấu') return '—';
+        const [s1, s2] = score;
+        if (s1 === '' || s2 === '') return 'Chưa đấu';
+        const score1 = Number(s1);
+        const score2 = Number(s2);
+        if (score1 > score2) return winner1;
+        if (score2 > score1) return winner2;
+        return 'Hòa (luân lưu)';
+      }
+
       function parseGroups() {
         try {
-          return JSON.parse($('#dataEditor').innerText).groups;
+          const parsed = JSON.parse($('#dataEditor').innerText);
+          const groups = parsed.groups || {};
+          return {
+            K4: groups.K4 || [],
+            K5: groups.K5 || []
+          };
         } catch(e) {
-          return {K4:[], K5:[]};
+          console.error('Error parsing groups:', e);
+          return {
+            K4: [
+              {team:"4/1"},{team:"4/2"},{team:"4/3"},{team:"4/4"},{team:"4/5"},{team:"4/6"}
+            ],
+            K5: [
+              {team:"5/1"},{team:"5/2"},{team:"5/3"},{team:"5/4"},{team:"5/5"},{team:"5/6"}
+            ]
+          };
         }
       }
 
@@ -385,56 +439,248 @@
             });
           });
         });
+        
+        // Render knockout fixtures
+        renderKnockoutFixtures(groups);
+      }
+
+      function renderKnockoutFixtures(groups) {
+        // Lấy top 2 mỗi bảng
+        const K4Top = groups.K4.slice(0, 2);
+        const K5Top = groups.K5.slice(0, 2);
+        
+        // Bán kết: Nhất K4 vs Nhì K5, Nhất K5 vs Nhì K4
+        const sf1Team1 = K4Top[0]?.team || '—'; // Nhất K4
+        const sf1Team2 = K5Top[1]?.team || '—'; // Nhì K5
+        const sf2Team1 = K5Top[0]?.team || '—'; // Nhất K5
+        const sf2Team2 = K4Top[1]?.team || '—'; // Nhì K4
+        
+        console.log(`Bán kết 1: ${sf1Team1} (Nhất K4) vs ${sf1Team2} (Nhì K5)`);
+        console.log(`Bán kết 2: ${sf2Team1} (Nhất K5) vs ${sf2Team2} (Nhì K4)`);
+        
+        const sf1Score = getScore('SF', sf1Team1, sf1Team2);
+        const sf2Score = getScore('SF', sf2Team1, sf2Team2);
+        
+        // Người thắng bán kết
+        const sf1Winner = getSemiFinalWinner(sf1Team1, sf1Team2, sf1Score);
+        const sf2Winner = getSemiFinalWinner(sf2Team1, sf2Team2, sf2Score);
+        
+        const knockoutHtml = `
+          <div class="match-card">
+            <div class="match-teams">
+              <div class="team">${sf1Team1}</div>
+              <div class="vs">vs</div>
+              <div class="team">${sf1Team2}</div>
+            </div>
+            <div class="match-scores">
+              <input type="number" min="0" value="${sf1Score[0]}" 
+                data-g="SF" data-a="${sf1Team1}" data-b="${sf1Team2}" data-pos="a" 
+                placeholder="0" ${editEnabled ? '' : 'disabled'} />
+              <span class="colon">:</span>
+              <input type="number" min="0" value="${sf1Score[1]}" 
+                data-g="SF" data-a="${sf1Team1}" data-b="${sf1Team2}" data-pos="b" 
+                placeholder="0" ${editEnabled ? '' : 'disabled'} />
+            </div>
+          </div>
+          
+          <div class="match-card">
+            <div class="match-teams">
+              <div class="team">${sf2Team1}</div>
+              <div class="vs">vs</div>
+              <div class="team">${sf2Team2}</div>
+            </div>
+            <div class="match-scores">
+              <input type="number" min="0" value="${sf2Score[0]}" 
+                data-g="SF" data-a="${sf2Team1}" data-b="${sf2Team2}" data-pos="a" 
+                placeholder="0" ${editEnabled ? '' : 'disabled'} />
+              <span class="colon">:</span>
+              <input type="number" min="0" value="${sf2Score[1]}" 
+                data-g="SF" data-a="${sf2Team1}" data-b="${sf2Team2}" data-pos="b" 
+                placeholder="0" ${editEnabled ? '' : 'disabled'} />
+            </div>
+          </div>`;
+        
+        $('#knockoutFixtures').innerHTML = knockoutHtml;
+        
+        // Chung kết (chỉ hiện khi có người thắng bán kết)
+        if (sf1Winner !== '—' && sf2Winner !== '—' && sf1Winner !== 'Chưa đấu' && sf2Winner !== 'Chưa đấu') {
+          const finalScore = getScore('FINAL', sf1Winner, sf2Winner);
+          const finalHtml = `
+            <div class="match-card">
+              <div class="match-teams">
+                <div class="team">${sf1Winner}</div>
+                <div class="vs">vs</div>
+                <div class="team">${sf2Winner}</div>
+              </div>
+              <div class="match-scores">
+                <input type="number" min="0" value="${finalScore[0]}" 
+                  data-g="FINAL" data-a="${sf1Winner}" data-b="${sf2Winner}" data-pos="a" 
+                  placeholder="0" ${editEnabled ? '' : 'disabled'} />
+                <span class="colon">:</span>
+                <input type="number" min="0" value="${finalScore[1]}" 
+                  data-g="FINAL" data-a="${sf1Winner}" data-b="${sf2Winner}" data-pos="b" 
+                  placeholder="0" ${editEnabled ? '' : 'disabled'} />
+              </div>
+            </div>`;
+          $('#finalFixtures').innerHTML = finalHtml;
+        } else {
+          $('#finalFixtures').innerHTML = '<p style="color:#6d8daa;text-align:center">Chưa có đối thủ chung kết</p>';
+        }
+        
+        // Thêm event listeners cho knockout inputs
+        document.querySelectorAll('#knockoutFixtures input, #finalFixtures input').forEach(inp => {
+          inp.addEventListener('input', (e) => {
+            const g = e.target.dataset.g;
+            const a = e.target.dataset.a;
+            const b = e.target.dataset.b;
+            const pos = e.target.dataset.pos;
+            const current = getScore(g, a, b);
+            if (pos === 'a') {
+              setScore(g, a, b, e.target.value, current[1]);
+            } else {
+              setScore(g, a, b, current[0], e.target.value);
+            }
+          });
+        });
       }
 
       function pointsFromResults(groups) {
-        const pts = {};
-        Object.values(groups).flat().forEach(t => pts[t.team] = 0);
+        const stats = {};
         
+        // Khởi tạo thống kê cho tất cả đội
+        Object.values(groups).flat().forEach(t => {
+          if (t && t.team) {
+            stats[t.team] = {
+              pts: 0,      // Điểm
+              played: 0,   // Số trận đã đấu
+              won: 0,      // Thắng
+              draw: 0,     // Hòa  
+              lost: 0,     // Thua
+              gf: 0,       // Bàn thắng
+              ga: 0,       // Bàn thua
+              gd: 0        // Hiệu số
+            };
+          }
+        });
+        
+        // Tính toán từ kết quả các trận đấu
         ['K4','K5'].forEach(g => {
           pairs(groups[g] || [], g).forEach(([a, b]) => {
             const [ra, rb] = getScore(g, a, b);
             const sa = ra === '' ? null : Number(ra);
             const sb = rb === '' ? null : Number(rb);
-            if (sa == null || sb == null) return;
-            if (sa > sb) pts[a] += 3;
-            else if (sa < sb) pts[b] += 3;
-            else { pts[a] += 1; pts[b] += 1; }
+            
+            if (sa != null && sb != null && stats[a] && stats[b]) {
+              // Cập nhật số trận đã đấu
+              stats[a].played++;
+              stats[b].played++;
+              
+              // Cập nhật bàn thắng/thua
+              stats[a].gf += sa;
+              stats[a].ga += sb;
+              stats[b].gf += sb;
+              stats[b].ga += sa;
+              
+              // Cập nhật kết quả trận đấu
+              if (sa > sb) {
+                stats[a].pts += 3;
+                stats[a].won++;
+                stats[b].lost++;
+              } else if (sa < sb) {
+                stats[b].pts += 3;
+                stats[b].won++;
+                stats[a].lost++;
+              } else {
+                stats[a].pts += 1;
+                stats[b].pts += 1;
+                stats[a].draw++;
+                stats[b].draw++;
+              }
+              
+              // Tính hiệu số
+              stats[a].gd = stats[a].gf - stats[a].ga;
+              stats[b].gd = stats[b].gf - stats[b].ga;
+              
+              console.log(`Match: ${a} ${sa}-${sb} ${b} | ${a}: ${stats[a].pts}pts, ${b}: ${stats[b].pts}pts`);
+            }
           });
         });
         
+        // Sắp xếp theo: Điểm > Hiệu số > Bàn thắng
+        const sortTeams = (teams) => {
+          const sorted = teams
+            .filter(t => t && t.team) // Lọc các đội hợp lệ
+            .map(t => ({
+              ...t, 
+              ...(stats[t.team] || {
+                pts: 0, played: 0, won: 0, draw: 0, lost: 0, 
+                gf: 0, ga: 0, gd: 0
+              })
+            }))
+            .sort((a, b) => {
+              if (b.pts !== a.pts) return b.pts - a.pts;
+              if (b.gd !== a.gd) return b.gd - a.gd;
+              return b.gf - a.gf;
+            });
+            
+          console.log(`Sorted teams:`, sorted.map(t => `${t.team}: ${t.pts}pts, ${t.gd}gd`));
+          return sorted;
+        };
+        
         return {
-          K4: (groups.K4 || []).map(t => ({...t, pts: pts[t.team] || 0})),
-          K5: (groups.K5 || []).map(t => ({...t, pts: pts[t.team] || 0}))
+          K4: sortTeams(groups.K4 || []),
+          K5: sortTeams(groups.K5 || [])
         };
       }
 
       function renderStandings(gid, arr) {
-        const rows = [...arr].sort((a, b) => b.pts - a.pts).map((t, i) => {
-          return `<tr>
-            <td style="width:54px">${i + 1}</td>
+        const rows = arr.map((t, i) => {
+          const pos = i + 1;
+          const rowClass = pos <= 2 ? 'style="background:#e7f5ff"' : ''; // Highlight top 2
+          return `<tr ${rowClass}>
+            <td style="width:40px;text-align:center">${pos}</td>
             <td style="font-weight:800">${t.team}</td>
-            <td style="width:80px;text-align:right">${t.pts} đ</td>
+            <td style="width:40px;text-align:center">${t.played}</td>
+            <td style="width:40px;text-align:center">${t.pts}</td>
+            <td style="width:50px;text-align:center">${t.gf}:${t.ga}</td>
+            <td style="width:40px;text-align:center">${t.gd >= 0 ? '+' : ''}${t.gd}</td>
           </tr>`;
         }).join('');
-        $(`#group${gid}`).innerHTML = `<tr>
-          <td style="width:54px">#</td>
+        
+        $(`#group${gid}`).innerHTML = `<tr style="background:#f8fbff">
+          <td style="width:40px;text-align:center">#</td>
           <td>Đội</td>
-          <td style="text-align:right">Điểm</td>
+          <td style="width:40px;text-align:center">Trận</td>
+          <td style="width:40px;text-align:center">Điểm</td>
+          <td style="width:50px;text-align:center">T-B</td>
+          <td style="width:40px;text-align:center">HS</td>
         </tr>` + rows;
       }
 
       function drawBracket(groups) {
-        function top2(g) {
-          return [...g].sort((a, b) => b.pts - a.pts).slice(0, 2);
-        }
+        // Lấy top 2 mỗi bảng (đã được sắp xếp)
+        const K4Top = groups.K4.slice(0, 2);
+        const K5Top = groups.K5.slice(0, 2);
         
-        const K4Top = top2(groups.K4);
-        const K5Top = top2(groups.K5);
+        console.log('K4 Top 2:', K4Top.map(t => `${t.team}: ${t.pts}pts`));
+        console.log('K5 Top 2:', K5Top.map(t => `${t.team}: ${t.pts}pts`));
+        
         const svg = $('#bracket');
         while(svg.firstChild) svg.removeChild(svg.firstChild);
         
         const NS = 'http://www.w3.org/2000/svg';
+        
+        // Lấy kết quả các trận knockout
+        const sf1Score = getScore('SF', K4Top[0]?.team || '', K5Top[1]?.team || ''); // Bán kết 1
+        const sf2Score = getScore('SF', K5Top[0]?.team || '', K4Top[1]?.team || ''); // Bán kết 2
+        const finalScore = getScore('FINAL', 'SF1_WINNER', 'SF2_WINNER'); // Chung kết
+        
+        // Tính người thắng bán kết
+        const sf1Winner = getSemiFinalWinner(K4Top[0]?.team || '', K5Top[1]?.team || '', sf1Score);
+        const sf2Winner = getSemiFinalWinner(K5Top[0]?.team || '', K4Top[1]?.team || '', sf2Score);
+        
+        // Tính vô địch
+        const champion = getFinalWinner(sf1Winner, sf2Winner, finalScore);
         
         function box(x, y, text, seed) {
           const g = document.createElementNS(NS, 'g');
@@ -485,16 +731,27 @@
           svg.appendChild(t);
         }
         
-        // Vẽ tứ kết
+        // Vẽ bán kết
         box(40, 60, K4Top[0]?.team || '—', 'Nhất K4');
         box(40, 160, K5Top[1]?.team || '—', 'Nhì K5');
         box(40, 240, K5Top[0]?.team || '—', 'Nhất K5');
         box(40, 340, K4Top[1]?.team || '—', 'Nhì K4');
         
-        // Vẽ đường nối bán kết
+        // Vẽ đường nối và kết quả bán kết
         line(300, 60, 340, 110);
         line(300, 160, 340, 110);
-        box(340, 110, 'Thắng BK1', 'BK 1');
+        box(340, 110, sf1Winner, 'BK 1');
+        
+        line(300, 240, 340, 290);
+        line(300, 340, 340, 290);
+        box(340, 290, sf2Winner, 'BK 2');
+        
+        // Vẽ chung kết
+        line(600, 110, 640, 200);
+        line(600, 290, 640, 200);
+        box(640, 200, champion, 'Chung kết');
+        
+        label(680, 240, '🏆 ' + (champion === 'Chưa đấu' || champion === '—' ? 'Vô địch' : champion));
         
         line(300, 240, 340, 290);
         line(300, 340, 340, 290);
@@ -561,7 +818,7 @@
             if (result.status === 'success' && result.data) {
               const newResults = {};
               
-              // Parse dữ liệu từ Apps Script
+                // Parse dữ liệu từ Apps Script
               result.data.forEach(row => {
                 const khoi = row.Khoi || row.khoi;
                 const doiA = row.DoiA || row.doiA;
@@ -569,16 +826,13 @@
                 let tiSoA = row.TiSoA || row.tiSoA;
                 let tiSoB = row.TiSoB || row.tiSoB;
                 
-                // Xử lý giá trị tỉ số - chỉ chuyển thành chuỗi rỗng nếu undefined/null
-                tiSoA = (tiSoA === undefined || tiSoA === null) ? '' : String(tiSoA);
-                tiSoB = (tiSoB === undefined || tiSoB === null) ? '' : String(tiSoB);
+                // Xử lý giá trị tỉ số - chỉ chuyển thành chuỗi rỗng nếu undefined/null/0
+                tiSoA = (tiSoA === undefined || tiSoA === null || tiSoA === '') ? '' : String(tiSoA);
+                tiSoB = (tiSoB === undefined || tiSoB === null || tiSoB === '') ? '' : String(tiSoB);
                 
                 if (khoi && doiA && doiB) {
                   const k = key(khoi, doiA, doiB);
                   newResults[k] = [tiSoA, tiSoB];
-                  
-                  // Debug log để kiểm tra
-                  console.log(`Loaded: ${khoi} ${doiA} vs ${doiB} = ${tiSoA}:${tiSoB}`);
                 }
               });
               
@@ -602,6 +856,14 @@
         // Tạo script tag cho JSONP
         const script = document.createElement('script');
         script.src = APPS_SCRIPT_URL + '?callback=' + callbackName;
+        
+        // Xử lý lỗi nếu script không tải được
+        script.onerror = function() {
+          showStatus('❌ Không thể kết nối đến Google Apps Script. Kiểm tra URL hoặc thử lại.', 'error');
+          document.head.removeChild(script);
+          delete window[callbackName];
+        };
+        
         document.head.appendChild(script);
       }
       
@@ -612,6 +874,7 @@
         const groups = parseGroups();
         const resultsArray = [];
         
+        // Thêm dữ liệu vòng bảng
         ['K4', 'K5'].forEach(g => {
           pairs(groups[g] || [], g).forEach(([a, b]) => {
             const [sa, sb] = getScore(g, a, b);
@@ -624,6 +887,55 @@
             });
           });
         });
+        
+        // Thêm dữ liệu knockout (nếu có)
+        const withPts = pointsFromResults(groups);
+        const K4Top = withPts.K4.slice(0, 2);
+        const K5Top = withPts.K5.slice(0, 2);
+        
+        // Bán kết
+        if (K4Top[0] && K5Top[1]) {
+          const [sa, sb] = getScore('SF', K4Top[0].team, K5Top[1].team);
+          if (sa || sb) {
+            resultsArray.push({
+              khoi: 'SF',
+              doiA: K4Top[0].team,
+              doiB: K5Top[1].team,
+              tiSoA: sa || '',
+              tiSoB: sb || ''
+            });
+          }
+        }
+        
+        if (K5Top[0] && K4Top[1]) {
+          const [sa, sb] = getScore('SF', K5Top[0].team, K4Top[1].team);
+          if (sa || sb) {
+            resultsArray.push({
+              khoi: 'SF',
+              doiA: K5Top[0].team,
+              doiB: K4Top[1].team,
+              tiSoA: sa || '',
+              tiSoB: sb || ''
+            });
+          }
+        }
+        
+        // Chung kết (nếu có người thắng bán kết)
+        const sf1Winner = getSemiFinalWinner(K4Top[0]?.team || '', K5Top[1]?.team || '', getScore('SF', K4Top[0]?.team || '', K5Top[1]?.team || ''));
+        const sf2Winner = getSemiFinalWinner(K5Top[0]?.team || '', K4Top[1]?.team || '', getScore('SF', K5Top[0]?.team || '', K4Top[1]?.team || ''));
+        
+        if (sf1Winner !== '—' && sf2Winner !== '—' && sf1Winner !== 'Chưa đấu' && sf2Winner !== 'Chưa đấu') {
+          const [sa, sb] = getScore('FINAL', sf1Winner, sf2Winner);
+          if (sa || sb) {
+            resultsArray.push({
+              khoi: 'FINAL',
+              doiA: sf1Winner,
+              doiB: sf2Winner,
+              tiSoA: sa || '',
+              tiSoB: sb || ''
+            });
+          }
+        }
         
         // Tạo callback function
         const callbackName = 'pushCallback_' + Date.now();
@@ -649,6 +961,14 @@
         const script = document.createElement('script');
         const dataParam = encodeURIComponent(JSON.stringify(resultsArray));
         script.src = APPS_SCRIPT_URL + '?action=update&data=' + dataParam + '&callback=' + callbackName;
+        
+        // Xử lý lỗi nếu script không tải được
+        script.onerror = function() {
+          showStatus('❌ Không thể kết nối đến Google Apps Script. Kiểm tra URL hoặc thử lại.', 'error');
+          document.head.removeChild(script);
+          delete window[callbackName];
+        };
+        
         document.head.appendChild(script);
       }
       
@@ -662,9 +982,14 @@
         pushToGoogleSheet();
       });
       
-      // Tự động tải từ Google Sheet mỗi 15 giây
+      // Tự động tải từ Google Sheet mỗi 1 phút
       loadFromGoogleSheet(); // Tải ngay khi vào trang
-      setInterval(loadFromGoogleSheet, 15000); // Tải lại mỗi 15 giây
+      setInterval(() => {
+        // Chỉ tự động tải khi không ở chế độ edit để tránh xung đột
+        if (!editEnabled) {
+          loadFromGoogleSheet();
+        }
+      }, 60000); // Tải lại mỗi 1 phút
       
       // Khởi tạo
       refreshAll();

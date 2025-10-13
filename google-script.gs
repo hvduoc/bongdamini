@@ -29,6 +29,9 @@ function doGet(e) {
           let value = row[i];
           if (value === undefined || value === null || value === '') {
             value = '';
+          } else {
+            // Loại bỏ dấu nháy đơn nếu có (để tránh format ngày tháng)
+            value = String(value).replace(/^'/, '');
           }
           obj[header] = value;
         });
@@ -83,7 +86,8 @@ function handleUpdate(e) {
     // Parse dữ liệu từ parameter
     const results = JSON.parse(e.parameter.data || '[]');
     results.forEach(row => {
-      sheet.appendRow([row.khoi, row.doiA, row.doiB, row.tiSoA, row.tiSoB]);
+      // Thêm dấu nháy đơn trước tên đội để tránh chuyển đổi thành ngày
+      sheet.appendRow([row.khoi, "'" + row.doiA, "'" + row.doiB, row.tiSoA, row.tiSoB]);
     });
 
     const result = {
