@@ -31,7 +31,8 @@ function doGet(e) {
         data: rows,
         count: rows.length
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader("Access-Control-Allow-Origin", "*");
       
   } catch (error) {
     return ContentService
@@ -39,7 +40,8 @@ function doGet(e) {
         status: 'error',
         message: error.toString()
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader("Access-Control-Allow-Origin", "*");
   }
 }
 
@@ -71,7 +73,8 @@ function doPost(e) {
           status: 'success',
           message: 'Sheet cleared'
         }))
-        .setMimeType(ContentService.MimeType.JSON);
+        .setMimeType(ContentService.MimeType.JSON)
+        .setHeader("Access-Control-Allow-Origin", "*");
     }
 
     // Nếu là update, ghi dữ liệu
@@ -94,7 +97,8 @@ function doPost(e) {
           message: 'Data updated successfully',
           count: data.results.length
         }))
-        .setMimeType(ContentService.MimeType.JSON);
+        .setMimeType(ContentService.MimeType.JSON)
+        .setHeader("Access-Control-Allow-Origin", "*");
     }
 
     console.log('Invalid action or missing data');
@@ -103,7 +107,8 @@ function doPost(e) {
         status: 'error',
         message: 'Invalid action or missing data'
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader("Access-Control-Allow-Origin", "*");
 
   } catch (error) {
     console.error('Error occurred:', error);
@@ -112,6 +117,7 @@ function doPost(e) {
         status: 'error',
         message: error.toString()
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader("Access-Control-Allow-Origin", "*");
   }
 }
