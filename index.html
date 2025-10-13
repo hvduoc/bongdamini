@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Giải Bóng Đá Mini | Trường Tiểu học Võ Thị Sáu</title>
+  <meta name="description" content="Trang truyền thông Giải Bóng Đá Mini học sinh 2025–2026 – Trường Tiểu học Võ Thị Sáu, Q. Hải Châu, Đà Nẵng."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--primary:#0b79d0;--secondary:#12b886;--accent:#ffb703;--ink:#153b5a;--bg:#f4f9ff;--card:#fff;--ring:0 12px 30px rgba(11,121,208,.12)}
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,Segoe UI,Roboto,sans-serif}
+    img{max-width:100%;height:auto}
+    a{color:var(--primary);text-decoration:none}
+    .container{max-width:1140px;margin:0 auto;padding:0 1.25rem}
+
+    /* NAV */
+    .nav{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid #e8eef6}
+    .nav .inner{display:flex;align-items:center;gap:1rem;padding:.6rem 0}
+    .brand{display:flex;align-items:center;gap:.6rem}
+    .brand img{width:44px;height:44px;border-radius:10px}
+    .brand .name{font-family:'Baloo 2',cursive;font-size:1.1rem;line-height:1}
+    .nav ul{list-style:none;display:flex;gap:1rem;margin-left:auto;padding:0}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;border:0;border-radius:14px;padding:.8rem 1.05rem;font-weight:800;box-shadow:var(--ring);cursor:pointer}
+    .btn.primary{background:var(--primary);color:#fff}
+    .btn.secondary{background:var(--secondary);color:#fff}
+    .btn.accent{background:var(--accent);color:#1b2832}
+    .chip{display:inline-flex;align-items:center;gap:.4rem;background:#e9f5ff;border:1px solid #d6ecff;color:#0a5aa0;border-radius:999px;padding:.35rem .6rem;font-weight:700}
+
+    /* HERO */
+    .hero{position:relative;isolation:isolate;background:linear-gradient(180deg,#dff1ff 0, #eff8ff 60%, transparent)}
+    .hero .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:2rem;align-items:center;padding:2rem 0 2.4rem}
+    h1{font-family:'Baloo 2',cursive;font-size:clamp(1.9rem,3.4vw,3.2rem);line-height:1.1;margin:.2rem 0}
+    .tagline{color:#6d8daa;font-weight:700}
+    .hero-points{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+    .card{background:var(--card);border:1px solid #e7eef5;padding:1rem;border-radius:18px;box-shadow:var(--ring)}
+    .card h3{margin:.2rem 0 .5rem;font-size:1.05rem}
+    .photo{border-radius:22px;border:6px solid #fff;box-shadow:var(--ring)}
+    .countdown{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+    .countdown .box{min-width:74px;text-align:center;background:#fff;border:1px solid #e7eef5;border-radius:12px;padding:.55rem .65rem}
+    .countdown .num{font-weight:900;font-size:1.3rem;color:var(--primary)}
+
+    section{padding:2.6rem 0}
+    .title{display:flex;align-items:center;gap:.6rem;font-family:'Baloo 2';font-size:1.6rem}
+    .dot{width:12px;height:12px;border-radius:999px;background:var(--accent)}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+
+    .timetable{width:100%;border-collapse:separate;border-spacing:0 .6rem}
+    .timetable tr{background:#fff;border-radius:12px;box-shadow:var(--ring)}
+    .timetable td{padding:.85rem 1rem;border-top:1px solid #eef4fb;border-bottom:1px solid #eef4fb}
+    .timetable td:first-child{width:86px;font-weight:800;color:#0b5ca3;border-left:1px solid #eef4fb;border-top-left-radius:12px;border-bottom-left-radius:12px}
+    .timetable td:last-child{border-right:1px solid #eef4fb;border-top-right-radius:12px;border-bottom-right-radius:12px}
+
+    /* BRACKET */
+    .bracket-label{font-size:.9rem;fill:#245b82}
+    .seed{font-weight:800;fill:#0b5ca3}
+    .team{font-weight:800;fill:#12324a}
+    .connector{stroke:#cfe6ff;stroke-width:2}
+    .slot{filter:drop-shadow(0 4px 12px rgba(11,121,208,.12))}
+    input.score{width:56px;text-align:center;border:1px solid #dbe7f4;border-radius:10px;padding:.35rem .4rem;font-weight:800}
+    input.score:disabled{background:#f2f7fc;color:#8aa3ba}
+    
+    /* FIXTURE MATCH CARD */
+    .match-card{background:#fff;border:1px solid #e7eef5;border-radius:12px;padding:.8rem;margin-bottom:.6rem;box-shadow:0 2px 8px rgba(11,121,208,.08)}
+    .match-teams{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+    .match-teams .team{font-weight:800;color:var(--primary);flex:1;text-align:center}
+    .match-teams .vs{color:#8aa3ba;font-weight:600;padding:0 .5rem}
+    .match-scores{display:flex;justify-content:center;gap:.5rem;align-items:center}
+    .match-scores input{width:64px;height:40px;text-align:center;border:2px solid #dbe7f4;border-radius:10px;font-weight:900;font-size:1.1rem}
+    .match-scores input:focus{outline:none;border-color:var(--primary)}
+    .match-scores .colon{font-weight:900;font-size:1.2rem;color:#6d8daa}
+
+    /* GALLERY */
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1rem}
+    .gallery img{width:100%;height:200px;object-fit:cover;border-radius:14px;box-shadow:0 6px 14px rgba(0,0,0,.08)}
+    iframe.drive{width:100%;height:560px;border:0;border-radius:12px}
+
+    /* FOOTER */
+    footer{background:#0b2740;color:#d3e9ff;padding:1.6rem 0;margin-top:1.8rem}
+    footer a{color:#ffd166}
+
+    @media(max-width:900px){
+      .hero .grid{grid-template-columns:1fr}
+      .hero-points{grid-template-columns:1fr 1fr}
+      .grid-2{grid-template-columns:1fr}
+      .grid-3{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="container inner">
+      <div class="brand">
+        <img src="logo.jpg" alt="Logo Trường Tiểu học Võ Thị Sáu"/>
+        <div class="name">Trường Tiểu học <strong>Võ Thị Sáu</strong></div>
+      </div>
+      <ul>
+        <li><a href="#muctieu">Mục tiêu</a></li>
+        <li><a href="#lich">Lịch thi đấu</a></li>
+        <li><a href="#sodo">Sơ đồ</a></li>
+        <li><a href="#album">Album</a></li>
+      </ul>
+      <a class="btn secondary" href="Độc lập - Tự do - Hạnh phúc.pdf" download>📄 Tải kế hoạch</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container grid">
+      <div>
+        <span class="chip">⚽ Giải Bóng Đá Mini 2025–2026</span>
+        <h1>Sân chơi đoàn kết – khỏe – vui cho học sinh khối 4 & 5</h1>
+        <p class="tagline">Khai mạc 15:00 ngày 16/10/2025 – Sân bóng An Phúc. Chung kết 02/11/2025.</p>
+        <div class="countdown" id="countdown"></div>
+        <div style="display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap">
+          <a class="btn primary" href="#dangky">Đăng ký / Bốc thăm</a>
+          <a class="btn accent" href="#lich">Xem lịch</a>
+        </div>
+        <div class="hero-points">
+          <div class="card"><h3>📐 Thể thức 5 người</h3><p>2 hiệp x 15’ (nghỉ 5’). Vòng bảng + loại trực tiếp.</p></div>
+          <div class="card"><h3>📍 Sân bóng An Phúc</h3><p>Địa điểm thi đấu chính thức của giải.</p></div>
+          <div class="card"><h3>🏆 Cúp – Cờ – Huy chương</h3><p>Trao thưởng Nhất, Nhì, Ba cho mỗi khối.</p></div>
+        </div>
+      </div>
+      <div>
+        <img class="photo" src="https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=1200&auto=format&fit=crop" alt="Học sinh chơi bóng đá"/>
+      </div>
+    </div>
+  </header>
+
+  <!-- MỤC TIÊU -->
+  <section id="muctieu">
+    <div class="container">
+      <h2 class="title"><span class="dot"></span> Mục tiêu & Đối tượng</h2>
+      <div class="grid-3" style="margin-top:1rem">
+        <div class="card"><h3>🎯 Mục tiêu</h3><ul><li>Chào mừng Ngày Nhà giáo Việt Nam 20/11</li><li>Giao lưu lành mạnh, rèn luyện sức khoẻ</li><li>Tuyển chọn VĐV nòng cốt của trường</li></ul></div>
+        <div class="card"><h3>👦👧 Đối tượng</h3><p>Học sinh <strong>khối 4,5</strong>. Mỗi lớp 01 đội nam: 5 chính + tối đa 5 dự bị.</p></div>
+        <div class="card"><h3>💰 Lệ phí & Địa điểm</h3><p>Lệ phí: <strong>300.000đ/lớp</strong>. Địa điểm: <strong>Sân bóng An Phúc – Võ Thị Sáu</strong>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LỊCH THI ĐẤU -->
+  <section id="lich" style="background:linear-gradient(180deg,rgba(18,184,134,.06),transparent)">
+    <div class="container">
+      <h2 class="title"><span class="dot"></span> Lịch thi đấu chính</h2>
+      <p style="color:#6d8daa">Vòng bảng 16–18/10 • Tứ kết 23/10 • Chung kết 02/11</p>
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>Ngày 16/10/2025 (Chiều)</h3>
+          <table class="timetable">
+            <tr><td>15:00</td><td>Khai mạc – Bốc thăm</td></tr>
+            <tr><td>15:30</td><td>Khối 4 – Sân 1: 4/2 vs 4/1</td></tr>
+            <tr><td>15:30</td><td>Khối 4 – Sân 2: 4/5 vs 4/6</td></tr>
+            <tr><td>16:10</td><td>Khối 5 – Sân 1: 5/1 vs 5/3</td></tr>
+            <tr><td>16:10</td><td>Khối 5 – Sân 2: 5/6 vs 5/4</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Ngày 17/10/2025 (Sáng)</h3>
+          <table class="timetable">
+            <tr><td>07:30</td><td>Khối 4 – Sân 1: 4/1 vs 4/4</td></tr>
+            <tr><td>07:30</td><td>Khối 4 – Sân 2: 4/6 vs 4/3</td></tr>
+            <tr><td>08:10</td><td>Khối 5 – Sân 1: 5/3 vs 5/2</td></tr>
+            <tr><td>08:10</td><td>Khối 5 – Sân 2: 5/4 vs 5/5</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Ngày 18/10/2025 (Sáng)</h3>
+          <table class="timetable">
+            <tr><td>07:30</td><td>Khối 4 – Sân 1: 4/2 vs 4/4</td></tr>
+            <tr><td>07:30</td><td>Khối 4 – Sân 2: 4/5 vs 4/3</td></tr>
+            <tr><td>08:10</td><td>Khối 5 – Sân 1: 5/1 vs 5/2</td></tr>
+            <tr><td>08:10</td><td>Khối 5 – Sân 2: 5/6 vs 5/5</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Tứ kết & Chung kết</h3>
+          <table class="timetable">
+            <tr><td>23/10 – 15:00</td><td>Tứ kết (Nhất A vs Nhì B • Nhất B vs Nhì A)</td></tr>
+            <tr><td>02/11 – 07:30</td><td>Tranh Ba Tư & Chung kết</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NHẬP KẾT QUẢ + BẢNG XẾP HẠNG -->
+  <section id="sodo">
+    <div class="container">
+      <h2 class="title"><span class="dot"></span> Nhập kết quả & Sơ đồ nhánh đấu</h2>
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+          <strong>Chế độ quản trị</strong>
+          <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+            <button class="btn accent" id="toggleEdit">Bật chế độ nhập (PIN)</button>
+            <button class="btn primary" id="loadFromSheet">⬇️ Tải từ Sheet</button>
+            <button class="btn secondary" id="exportData">⬆️ Đẩy lên Sheet</button>
+            <button class="btn" id="clearData">Xoá dữ liệu</button>
+          </div>
+        </div>
+        <small style="color:#6d8daa">
+          <strong>Chế độ Admin:</strong> Nhập PIN → Nhập tỉ số trên web → Nhấn "Đẩy lên Sheet" → Tự động lưu vào Google Sheet!<br/>
+          <strong>Chế độ Xem:</strong> Trang tự động tải tỉ số từ Google Sheet mỗi 15 giây (hoặc nhấn "Tải từ Sheet").
+        </small>
+        <div id="sheetStatus" style="margin-top:.5rem;padding:.5rem;border-radius:8px;display:none"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Nhập tỉ số vòng bảng</h3>
+          <div class="grid-2">
+            <div>
+              <h4>Khối 4</h4>
+              <div id="fixturesA"></div>
+            </div>
+            <div>
+              <h4>Khối 5</h4>
+              <div id="fixturesB"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Bảng xếp hạng</h3>
+          <div class="grid-2">
+            <div>
+              <h4>Khối 4</h4>
+              <table class="timetable" id="groupA"></table>
+            </div>
+            <div>
+              <h4>Khối 5</h4>
+              <table class="timetable" id="groupB"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1rem">
+        <h3>Nhánh đấu (Tứ kết → CK)</h3>
+        <svg id="bracket" viewBox="0 0 800 360" style="width:100%;height:auto;border-radius:12px;background:#f8fbff;border:1px solid #e6eef7"></svg>
+        <div class="chip" style="margin:.5rem 0 0">🏆 Chung kết 02/11/2025</div>
+      </div>
+
+      <details style="margin-top:1rem">
+        <summary style="cursor:pointer;font-weight:800">⚙️ Cấu hình đội (có thể chỉnh JSON)</summary>
+        <pre id="dataEditor" contenteditable style="white-space:pre;display:block;background:#0b2740;color:#cfe6ff;padding:1rem;border-radius:12px;box-shadow:var(--ring);overflow:auto">{
+  "groups": {
+    "K4": [
+      {"team":"4/1"},{"team":"4/2"},{"team":"4/3"},{"team":"4/4"},{"team":"4/5"},{"team":"4/6"}
+    ],
+    "K5": [
+      {"team":"5/1"},{"team":"5/2"},{"team":"5/3"},{"team":"5/4"},{"team":"5/5"},{"team":"5/6"}
+    ]
+  }
+}</pre>
+      </details>
+    </div>
+  </section>
+
+  <!-- ALBUM -->
+  <section id="album" style="background:linear-gradient(180deg,rgba(255,183,3,.08),transparent)">
+    <div class="container">
+      <h2 class="title"><span class="dot"></span> Album & Khoảnh khắc</h2>
+      <p style="color:#6d8daa">Thư mục chung: phụ huynh & giáo viên có thể tải ảnh/video. Ảnh trên trang hiển thị ngẫu nhiên (không dùng API).</p>
+      <div style="margin:1rem 0">
+        <a class="btn primary" target="_blank" href="https://drive.google.com/drive/folders/1mXQXp9gXpX-rai26npHtCEcb8JaMM7xi?usp=sharing">📁 Mở thư mục Google Drive</a>
+      </div>
+      <div class="gallery" id="randomGallery"></div>
+      <iframe class="drive" src="https://drive.google.com/embeddedfolderview?id=1mXQXp9gXpX-rai26npHtCEcb8JaMM7xi#grid" allowfullscreen title="Album Drive"></iframe>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.6rem"><img src="logo.jpg" alt="Logo" style="width:44px;height:44px;border-radius:10px"> <strong>Trường Tiểu học Võ Thị Sáu</strong></div>
+      <div>© 2025 • Giải Bóng Đá Mini Học Sinh</div>
+    </div>
+  </footer>
+
+  <script>
+    // COUNTDOWN
+    (function(){
+      const target=new Date('2025-10-16T15:00:00');
+      const el=document.getElementById('countdown');
+      const box=(n,l)=>`<div class="box"><div class="num">${n}</div><div>${l}</div></div>`;
+      function tick(){const now=new Date();let d= Math.max(0,target-now);const dd=Math.floor(d/86400000);d-=dd*86400000;const h=Math.floor(d/3600000);d-=h*3600000;const m=Math.floor(d/60000);d-=m*60000;const s=Math.floor(d/1000);el.innerHTML=box(dd,'ngày')+box(h,'giờ')+box(m,'phút')+box(s,'giây');}
+      tick();setInterval(tick,1000);
+    })();
+
+    // ===== KẾT QUẢ TỰ TÍNH + PIN + GOOGLE SHEETS =====
+    (function(){
+      const $ = (s) => document.querySelector(s);
+      const ADMIN_PIN = '2468';
+      
+      // URL Google Apps Script - API đã deploy
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3ia4q0Z6qCyO7SCJRCIdTtgtV-w5DvGhYa1nLFz0PEtefklFjK-aFu2Qadr_4Bz4/exec';
+      
+      let editEnabled = false;
+      let results = JSON.parse(localStorage.getItem('vts_results') || '{}');
+      
+      // Lịch thi đấu cố định theo bốc thăm
+      const FIXTURES = {
+        K4: [
+          ['4/2','4/1'], ['4/5','4/6'],  // 16/10
+          ['4/1','4/4'], ['4/6','4/3'],  // 17/10
+          ['4/2','4/4'], ['4/5','4/3']   // 18/10
+        ],
+        K5: [
+          ['5/1','5/3'], ['5/6','5/4'],  // 16/10
+          ['5/3','5/2'], ['5/4','5/5'],  // 17/10
+          ['5/1','5/2'], ['5/6','5/5']   // 18/10
+        ]
+      };
+
+      function pairs(list, groupKey) {
+        return FIXTURES[groupKey] || [];
+      }
+
+      function key(g, a, b) {
+        return `${g}_${a}_${b}`;
+      }
+
+      function getScore(g, a, b) {
+        return results[key(g, a, b)] || ['', ''];
+      }
+
+      function setScore(g, a, b, va, vb) {
+        results[key(g, a, b)] = [va, vb];
+        localStorage.setItem('vts_results', JSON.stringify(results));
+        refreshAll();
+      }
+
+      function parseGroups() {
+        try {
+          return JSON.parse($('#dataEditor').innerText).groups;
+        } catch(e) {
+          return {K4:[], K5:[]};
+        }
+      }
+
+      function renderFixtures(groups) {
+        ['K4','K5'].forEach(g => {
+          const groupLetter = g === 'K4' ? 'A' : 'B';
+          const host = $(`#fixtures${groupLetter}`);
+          const matches = pairs(groups[g] || [], g).map(([a, b]) => {
+            const [sa, sb] = getScore(g, a, b);
+            return `<div class="match-card">
+              <div class="match-teams">
+                <div class="team">${a}</div>
+                <div class="vs">vs</div>
+                <div class="team">${b}</div>
+              </div>
+              <div class="match-scores">
+                <input type="number" min="0" value="${sa}" 
+                  data-g="${g}" data-a="${a}" data-b="${b}" data-pos="a" 
+                  placeholder="0"
+                  ${editEnabled ? '' : 'disabled'} />
+                <span class="colon">:</span>
+                <input type="number" min="0" value="${sb}" 
+                  data-g="${g}" data-a="${a}" data-b="${b}" data-pos="b" 
+                  placeholder="0"
+                  ${editEnabled ? '' : 'disabled'} />
+              </div>
+            </div>`;
+          }).join('');
+          host.innerHTML = matches;
+          
+          // Thêm event listener cho các input
+          host.querySelectorAll('input').forEach(inp => {
+            inp.addEventListener('input', (e) => {
+              const g = e.target.dataset.g;
+              const a = e.target.dataset.a;
+              const b = e.target.dataset.b;
+              const pos = e.target.dataset.pos;
+              const current = getScore(g, a, b);
+              if (pos === 'a') {
+                setScore(g, a, b, e.target.value, current[1]);
+              } else {
+                setScore(g, a, b, current[0], e.target.value);
+              }
+            });
+          });
+        });
+      }
+
+      function pointsFromResults(groups) {
+        const pts = {};
+        Object.values(groups).flat().forEach(t => pts[t.team] = 0);
+        
+        ['K4','K5'].forEach(g => {
+          pairs(groups[g] || [], g).forEach(([a, b]) => {
+            const [ra, rb] = getScore(g, a, b);
+            const sa = ra === '' ? null : Number(ra);
+            const sb = rb === '' ? null : Number(rb);
+            if (sa == null || sb == null) return;
+            if (sa > sb) pts[a] += 3;
+            else if (sa < sb) pts[b] += 3;
+            else { pts[a] += 1; pts[b] += 1; }
+          });
+        });
+        
+        return {
+          K4: (groups.K4 || []).map(t => ({...t, pts: pts[t.team] || 0})),
+          K5: (groups.K5 || []).map(t => ({...t, pts: pts[t.team] || 0}))
+        };
+      }
+
+      function renderStandings(gid, arr) {
+        const rows = [...arr].sort((a, b) => b.pts - a.pts).map((t, i) => {
+          return `<tr>
+            <td style="width:54px">${i + 1}</td>
+            <td style="font-weight:800">${t.team}</td>
+            <td style="width:80px;text-align:right">${t.pts} đ</td>
+          </tr>`;
+        }).join('');
+        $(`#group${gid}`).innerHTML = `<tr>
+          <td style="width:54px">#</td>
+          <td>Đội</td>
+          <td style="text-align:right">Điểm</td>
+        </tr>` + rows;
+      }
+
+      function drawBracket(groups) {
+        function top2(g) {
+          return [...g].sort((a, b) => b.pts - a.pts).slice(0, 2);
+        }
+        
+        const K4Top = top2(groups.K4);
+        const K5Top = top2(groups.K5);
+        const svg = $('#bracket');
+        while(svg.firstChild) svg.removeChild(svg.firstChild);
+        
+        const NS = 'http://www.w3.org/2000/svg';
+        
+        function box(x, y, text, seed) {
+          const g = document.createElementNS(NS, 'g');
+          g.setAttribute('class', 'slot');
+          
+          const r = document.createElementNS(NS, 'rect');
+          r.setAttribute('x', x);
+          r.setAttribute('y', y - 22);
+          r.setAttribute('rx', 10);
+          r.setAttribute('ry', 10);
+          r.setAttribute('width', 260);
+          r.setAttribute('height', 44);
+          r.setAttribute('fill', '#fff');
+          r.setAttribute('stroke', '#e6eef7');
+          
+          const s = document.createElementNS(NS, 'text');
+          s.setAttribute('x', x + 12);
+          s.setAttribute('y', y - 4);
+          s.setAttribute('class', 'seed');
+          s.textContent = seed;
+          
+          const t = document.createElementNS(NS, 'text');
+          t.setAttribute('x', x + 96);
+          t.setAttribute('y', y - 4);
+          t.setAttribute('class', 'team');
+          t.textContent = text;
+          
+          g.append(r, s, t);
+          svg.appendChild(g);
+        }
+        
+        function line(x1, y1, x2, y2) {
+          const l = document.createElementNS(NS, 'line');
+          l.setAttribute('x1', x1);
+          l.setAttribute('y1', y1);
+          l.setAttribute('x2', x2);
+          l.setAttribute('y2', y2);
+          l.setAttribute('class', 'connector');
+          svg.appendChild(l);
+        }
+        
+        function label(x, y, text) {
+          const t = document.createElementNS(NS, 'text');
+          t.setAttribute('x', x);
+          t.setAttribute('y', y);
+          t.setAttribute('class', 'bracket-label');
+          t.textContent = text;
+          svg.appendChild(t);
+        }
+        
+        // Vẽ tứ kết
+        box(40, 60, K4Top[0]?.team || '—', 'Nhất K4');
+        box(40, 160, K5Top[1]?.team || '—', 'Nhì K5');
+        box(40, 240, K5Top[0]?.team || '—', 'Nhất K5');
+        box(40, 340, K4Top[1]?.team || '—', 'Nhì K4');
+        
+        // Vẽ đường nối bán kết
+        line(300, 60, 340, 110);
+        line(300, 160, 340, 110);
+        box(340, 110, 'Thắng BK1', 'BK 1');
+        
+        line(300, 240, 340, 290);
+        line(300, 340, 340, 290);
+        box(340, 290, 'Thắng BK2', 'BK 2');
+        
+        // Vẽ chung kết
+        line(600, 110, 640, 200);
+        line(600, 290, 640, 200);
+        box(640, 200, 'Vô địch', 'Chung kết');
+        
+        label(680, 240, '🏆 Vô địch');
+      }
+
+      function refreshAll() {
+        const groups = parseGroups();
+        renderFixtures(groups);
+        const withPts = pointsFromResults(groups);
+        renderStandings('A', withPts.K4);
+        renderStandings('B', withPts.K5);
+        drawBracket(withPts);
+      }
+
+      $('#toggleEdit').addEventListener('click', () => {
+        if (!editEnabled) {
+          const pin = prompt('Nhập PIN để bật chế độ nhập:');
+          if (pin !== '2468') return alert('Sai PIN!');
+          editEnabled = true;
+          $('#toggleEdit').textContent = 'Tắt chế độ nhập';
+        } else {
+          editEnabled = false;
+          $('#toggleEdit').textContent = 'Bật chế độ nhập (PIN)';
+        }
+        refreshAll();
+      });
+      
+      $('#clearData').addEventListener('click', () => {
+        if (confirm('Xoá toàn bộ tỉ số đã lưu trên thiết bị?')) {
+          localStorage.removeItem('vts_results');
+          results = {};
+          refreshAll();
+        }
+      });
+
+      // ===== GOOGLE SHEETS INTEGRATION =====
+      
+      function showStatus(msg, type = 'info') {
+        const status = $('#sheetStatus');
+        status.style.display = 'block';
+        status.style.background = type === 'success' ? '#d3f9d8' : type === 'error' ? '#ffe3e3' : '#e7f5ff';
+        status.style.color = type === 'success' ? '#2b8a3e' : type === 'error' ? '#c92a2a' : '#1971c2';
+        status.innerHTML = msg;
+        setTimeout(() => { status.style.display = 'none'; }, 5000);
+      }
+      
+      // Load dữ liệu từ Google Sheet qua Apps Script
+      async function loadFromGoogleSheet() {
+        try {
+          showStatus('🔄 Đang tải dữ liệu từ Google Sheet...', 'info');
+          
+          const response = await fetch(APPS_SCRIPT_URL);
+          const result = await response.json();
+          
+          if (result.status === 'success' && result.data) {
+            const newResults = {};
+            
+            // Parse dữ liệu từ Apps Script
+            result.data.forEach(row => {
+              const khoi = row.Khoi || row.khoi;
+              const doiA = row.DoiA || row.doiA;
+              const doiB = row.DoiB || row.doiB;
+              const tiSoA = row.TiSoA || row.tiSoA || '';
+              const tiSoB = row.TiSoB || row.tiSoB || '';
+              
+              if (khoi && doiA && doiB) {
+                const k = key(khoi, doiA, doiB);
+                newResults[k] = [String(tiSoA), String(tiSoB)];
+              }
+            });
+            
+            results = newResults;
+            localStorage.setItem('vts_results', JSON.stringify(results));
+            refreshAll();
+            showStatus('✅ Tải thành công ' + result.count + ' trận đấu từ Google Sheet!', 'success');
+          } else {
+            throw new Error(result.message || 'Lỗi không xác định');
+          }
+        } catch (error) {
+          console.error('Lỗi khi tải Google Sheet:', error);
+          showStatus('❌ Lỗi: ' + error.message, 'error');
+        }
+      }
+      
+      // Tự động đẩy dữ liệu lên Google Sheet
+      async function pushToGoogleSheet() {
+        try {
+          showStatus('⬆️ Đang đẩy dữ liệu lên Google Sheet...', 'info');
+          
+          const groups = parseGroups();
+          const resultsArray = [];
+          
+          ['K4', 'K5'].forEach(g => {
+            pairs(groups[g] || [], g).forEach(([a, b]) => {
+              const [sa, sb] = getScore(g, a, b);
+              resultsArray.push({
+                khoi: g,
+                doiA: a,
+                doiB: b,
+                tiSoA: sa || '',
+                tiSoB: sb || ''
+              });
+            });
+          });
+          
+          const response = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              action: 'update',
+              results: resultsArray
+            })
+          });
+          
+          const result = await response.json();
+          
+          if (result.status === 'success') {
+            showStatus('✅ Đã cập nhật ' + result.count + ' trận lên Google Sheet!', 'success');
+          } else {
+            throw new Error(result.message || 'Lỗi khi cập nhật');
+          }
+        } catch (error) {
+          console.error('Lỗi khi đẩy lên Google Sheet:', error);
+          showStatus('❌ Lỗi: ' + error.message, 'error');
+        }
+      }
+      
+      // Event listeners
+      $('#loadFromSheet').addEventListener('click', loadFromGoogleSheet);
+      $('#exportData').addEventListener('click', () => {
+        if (Object.keys(results).length === 0) {
+          alert('Chưa có dữ liệu để xuất. Hãy nhập tỉ số trước!');
+          return;
+        }
+        pushToGoogleSheet();
+      });
+      
+      // Tự động tải từ Google Sheet mỗi 15 giây
+      loadFromGoogleSheet(); // Tải ngay khi vào trang
+      setInterval(loadFromGoogleSheet, 15000); // Tải lại mỗi 15 giây
+      
+      // Khởi tạo
+      refreshAll();
+    })();
+
+    // ===== ALBUM NGẪU NHIÊN (KHÔNG API) =====
+    (function(){
+      const gal=document.getElementById('randomGallery');
+      const images=[
+        'https://images.unsplash.com/photo-1517481705099-9c63b7a1d829?q=80&w=1200&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=1200&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1200&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?q=80&w=1200&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1531592782745-6c6b6ad21d8f?q=80&w=1200&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1531938716357-248c1df9fc6b?q=80&w=1200&auto=format&fit=crop'
+      ];
+      function refresh(){ gal.innerHTML=''; images.sort(()=>Math.random()-0.5).slice(0,6).forEach(u=>{ const img=new Image(); img.src=u; gal.appendChild(img); }); }
+      refresh(); setInterval(refresh,4000);
+    })();
+  </script>
+</body>
+</html>
