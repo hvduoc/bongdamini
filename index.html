@@ -549,91 +549,100 @@
         setTimeout(() => { status.style.display = 'none'; }, 5000);
       }
       
-      // Load dữ liệu từ Google Sheet qua Apps Script
-      async function loadFromGoogleSheet() {
-        try {
-          showStatus('🔄 Đang tải dữ liệu từ Google Sheet...', 'info');
-          
-          const response = await fetch(APPS_SCRIPT_URL);
-          const result = await response.json();
-          
-          if (result.status === 'success' && result.data) {
-            const newResults = {};
-            
-            // Parse dữ liệu từ Apps Script
-            result.data.forEach(row => {
-              const khoi = row.Khoi || row.khoi;
-              const doiA = row.DoiA || row.doiA;
-              const doiB = row.DoiB || row.doiB;
-              const tiSoA = row.TiSoA || row.tiSoA || '';
-              const tiSoB = row.TiSoB || row.tiSoB || '';
+      // Load dữ liệu từ Google Sheet (JSONP - không lỗi CORS)
+      function loadFromGoogleSheet() {
+        showStatus('🔄 Đang tải dữ liệu từ Google Sheet...', 'info');
+        
+        // Tạo callback function duy nhất
+        const callbackName = 'loadCallback_' + Date.now();
+        
+        window[callbackName] = function(result) {
+          try {
+            if (result.status === 'success' && result.data) {
+              const newResults = {};
               
-              if (khoi && doiA && doiB) {
-                const k = key(khoi, doiA, doiB);
-                newResults[k] = [String(tiSoA), String(tiSoB)];
-              }
-            });
-            
-            results = newResults;
-            localStorage.setItem('vts_results', JSON.stringify(results));
-            refreshAll();
-            showStatus('✅ Tải thành công ' + result.count + ' trận đấu từ Google Sheet!', 'success');
-          } else {
-            throw new Error(result.message || 'Lỗi không xác định');
+              // Parse dữ liệu từ Apps Script
+              result.data.forEach(row => {
+                const khoi = row.Khoi || row.khoi;
+                const doiA = row.DoiA || row.doiA;
+                const doiB = row.DoiB || row.doiB;
+                const tiSoA = row.TiSoA || row.tiSoA || '';
+                const tiSoB = row.TiSoB || row.tiSoB || '';
+                
+                if (khoi && doiA && doiB) {
+                  const k = key(khoi, doiA, doiB);
+                  newResults[k] = [String(tiSoA), String(tiSoB)];
+                }
+              });
+              
+              results = newResults;
+              localStorage.setItem('vts_results', JSON.stringify(results));
+              refreshAll();
+              showStatus('✅ Tải thành công ' + result.count + ' trận đấu từ Google Sheet!', 'success');
+            } else {
+              throw new Error(result.message || 'Lỗi không xác định');
+            }
+          } catch (error) {
+            console.error('Lỗi khi tải Google Sheet:', error);
+            showStatus('❌ Lỗi: ' + error.message, 'error');
           }
-        } catch (error) {
-          console.error('Lỗi khi tải Google Sheet:', error);
-          showStatus('❌ Lỗi: ' + error.message, 'error');
-        }
+          
+          // Cleanup
+          document.head.removeChild(script);
+          delete window[callbackName];
+        };
+        
+        // Tạo script tag cho JSONP
+        const script = document.createElement('script');
+        script.src = APPS_SCRIPT_URL + '?callback=' + callbackName;
+        document.head.appendChild(script);
       }
       
-      // Tự động đẩy dữ liệu lên Google Sheet
-      async function pushToGoogleSheet() {
-        try {
-          showStatus('⬆️ Đang đẩy dữ liệu lên Google Sheet...', 'info');
-          
-          const groups = parseGroups();
-          const resultsArray = [];
-          
-          ['K4', 'K5'].forEach(g => {
-            pairs(groups[g] || [], g).forEach(([a, b]) => {
-              const [sa, sb] = getScore(g, a, b);
-              resultsArray.push({
-                khoi: g,
-                doiA: a,
-                doiB: b,
-                tiSoA: sa || '',
-                tiSoB: sb || ''
-              });
+      // Đẩy dữ liệu lên Google Sheet (JSONP)
+      function pushToGoogleSheet() {
+        showStatus('⬆️ Đang đẩy dữ liệu lên Google Sheet...', 'info');
+        
+        const groups = parseGroups();
+        const resultsArray = [];
+        
+        ['K4', 'K5'].forEach(g => {
+          pairs(groups[g] || [], g).forEach(([a, b]) => {
+            const [sa, sb] = getScore(g, a, b);
+            resultsArray.push({
+              khoi: g,
+              doiA: a,
+              doiB: b,
+              tiSoA: sa || '',
+              tiSoB: sb || ''
             });
           });
-          
-          const response = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              action: 'update',
-              results: resultsArray
-            })
-          });
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        });
+        
+        // Tạo callback function
+        const callbackName = 'pushCallback_' + Date.now();
+        
+        window[callbackName] = function(result) {
+          try {
+            if (result.status === 'success') {
+              showStatus('✅ Đã cập nhật ' + result.count + ' trận lên Google Sheet!', 'success');
+            } else {
+              throw new Error(result.message || 'Lỗi khi cập nhật');
+            }
+          } catch (error) {
+            console.error('Lỗi khi đẩy lên Google Sheet:', error);
+            showStatus('❌ Lỗi: ' + error.message, 'error');
           }
-
-          const result = await response.json();
           
-          if (result.status === 'success') {
-            showStatus('✅ Đã cập nhật ' + result.count + ' trận lên Google Sheet!', 'success');
-          } else {
-            throw new Error(result.message || 'Lỗi khi cập nhật');
-          }
-        } catch (error) {
-          console.error('Lỗi khi đẩy lên Google Sheet:', error);
-          showStatus('❌ Lỗi: ' + error.message, 'error');
-        }
+          // Cleanup
+          document.head.removeChild(script);
+          delete window[callbackName];
+        };
+        
+        // Tạo script tag với data
+        const script = document.createElement('script');
+        const dataParam = encodeURIComponent(JSON.stringify(resultsArray));
+        script.src = APPS_SCRIPT_URL + '?action=update&data=' + dataParam + '&callback=' + callbackName;
+        document.head.appendChild(script);
       }
       
       // Event listeners
