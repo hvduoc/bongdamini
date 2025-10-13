@@ -5,8 +5,23 @@
 const SHEET_ID = '1x3ueNpDsii_oMg9FXROZlHzKLW3SHHDr43TEsgoNcvQ';
 const SHEET_NAME = 'KetQua';
 
+// Xử lý yêu cầu OPTIONS (Preflight Request)
+function doOptions(e) {
+  return ContentService
+    .createTextOutput('')
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader("Access-Control-Allow-Origin", "*")
+    .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    .setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
+
 // GET: Lấy dữ liệu từ sheet (tránh CORS)
 function doGet(e) {
+  // Xử lý yêu cầu OPTIONS
+  if (e.parameter && e.parameter.method === 'OPTIONS') {
+    return doOptions(e);
+  }
+
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const sheet = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
@@ -24,7 +39,7 @@ function doGet(e) {
       return obj;
     });
     
-    // Trả về JSON với CORS header
+    // Trả về JSON với CORS header đầy đủ
     return ContentService
       .createTextOutput(JSON.stringify({
         status: 'success',
@@ -32,7 +47,9 @@ function doGet(e) {
         count: rows.length
       }))
       .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*");
+      .setHeader("Access-Control-Allow-Origin", "*")
+      .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+      .setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
       
   } catch (error) {
     return ContentService
@@ -41,7 +58,9 @@ function doGet(e) {
         message: error.toString()
       }))
       .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*");
+      .setHeader("Access-Control-Allow-Origin", "*")
+      .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+      .setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   }
 }
 
@@ -74,7 +93,9 @@ function doPost(e) {
           message: 'Sheet cleared'
         }))
         .setMimeType(ContentService.MimeType.JSON)
-        .setHeader("Access-Control-Allow-Origin", "*");
+        .setHeader("Access-Control-Allow-Origin", "*")
+        .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        .setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     }
 
     // Nếu là update, ghi dữ liệu
@@ -98,7 +119,9 @@ function doPost(e) {
           count: data.results.length
         }))
         .setMimeType(ContentService.MimeType.JSON)
-        .setHeader("Access-Control-Allow-Origin", "*");
+        .setHeader("Access-Control-Allow-Origin", "*")
+        .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        .setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     }
 
     console.log('Invalid action or missing data');
@@ -108,7 +131,9 @@ function doPost(e) {
         message: 'Invalid action or missing data'
       }))
       .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*");
+      .setHeader("Access-Control-Allow-Origin", "*")
+      .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+      .setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   } catch (error) {
     console.error('Error occurred:', error);
@@ -118,6 +143,8 @@ function doPost(e) {
         message: error.toString()
       }))
       .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*");
+      .setHeader("Access-Control-Allow-Origin", "*")
+      .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+      .setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   }
 }
