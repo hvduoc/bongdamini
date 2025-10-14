@@ -139,7 +139,7 @@
       <h2 class="title"><span class="dot"></span> Mục tiêu & Đối tượng</h2>
       <div class="grid-3" style="margin-top:1rem">
         <div class="card"><h3>🎯 Mục tiêu</h3><ul><li>Chào mừng Ngày Nhà giáo Việt Nam 20/11</li><li>Giao lưu lành mạnh, rèn luyện sức khoẻ</li><li>Tuyển chọn VĐV nòng cốt của trường</li></ul></div>
-        <div class="card"><h3>👦👧 Đối tượng</h3><p>Học sinh <strong>khối 4,5</strong>. Mỗi lớp 01 đội nam: 5 chính + tối đa 5 dự bị.</p></div>
+        <div class="card"><h3>👦 Đối tượng</h3><p>Học sinh <strong>khối 4,5</strong>. Mỗi lớp 01 đội nam: 5 chính + tối đa 5 dự bị.</p></div>
         <div class="card"><h3>💰 Lệ phí & Địa điểm</h3><p>Lệ phí: <strong>300.000đ/lớp</strong>. Địa điểm: <strong>Sân bóng An Phúc – Võ Thị Sáu</strong>.</p></div>
       </div>
     </div>
@@ -375,6 +375,14 @@
         return 'Hòa (luân lưu)';
       }
 
+      // Hàm lấy tỉ số chung kết với tên đội thực tế
+      function getFinalScore(winner1, winner2) {
+        if (winner1 === '—' || winner2 === '—' || winner1 === 'Chưa đấu' || winner2 === 'Chưa đấu') {
+          return ['', ''];
+        }
+        return getScore('FINAL', winner1, winner2);
+      }
+
       function parseGroups() {
         const defaultGroups = {
           K4: [
@@ -465,11 +473,15 @@
         const K4Top = groups.K4.slice(0, 2);
         const K5Top = groups.K5.slice(0, 2);
         
+        // Kiểm tra xem đã có kết quả thi đấu chưa (điểm > 0)
+        const hasK4Results = K4Top[0]?.points > 0;
+        const hasK5Results = K5Top[0]?.points > 0;
+        
         // Bán kết: Nhất K4 vs Nhì K5, Nhất K5 vs Nhì K4
-        const sf1Team1 = K4Top[0]?.team || '—'; // Nhất K4
-        const sf1Team2 = K5Top[1]?.team || '—'; // Nhì K5
-        const sf2Team1 = K5Top[0]?.team || '—'; // Nhất K5
-        const sf2Team2 = K4Top[1]?.team || '—'; // Nhì K4
+        const sf1Team1 = hasK4Results ? (K4Top[0]?.team || '—') : 'Nhất K4'; 
+        const sf1Team2 = hasK5Results ? (K5Top[1]?.team || '—') : 'Nhì K5';
+        const sf2Team1 = hasK5Results ? (K5Top[0]?.team || '—') : 'Nhất K5';
+        const sf2Team2 = hasK4Results ? (K4Top[1]?.team || '—') : 'Nhì K4';
         
 
         
@@ -676,6 +688,16 @@
         const K4Top = groups.K4.slice(0, 2);
         const K5Top = groups.K5.slice(0, 2);
         
+        // Kiểm tra xem đã có kết quả thi đấu chưa (điểm > 0)
+        const hasK4Results = K4Top[0]?.points > 0;
+        const hasK5Results = K5Top[0]?.points > 0;
+        
+        // Xác định tên hiển thị dựa trên kết quả thi đấu
+        const sf1Team1 = hasK4Results ? (K4Top[0]?.team || '—') : 'Nhất K4';
+        const sf1Team2 = hasK5Results ? (K5Top[1]?.team || '—') : 'Nhì K5';
+        const sf2Team1 = hasK5Results ? (K5Top[0]?.team || '—') : 'Nhất K5';
+        const sf2Team2 = hasK4Results ? (K4Top[1]?.team || '—') : 'Nhì K4';
+        
 
         
         const svg = $('#bracket');
@@ -683,14 +705,16 @@
         
         const NS = 'http://www.w3.org/2000/svg';
         
-        // Lấy kết quả các trận knockout
-        const sf1Score = getScore('SF', K4Top[0]?.team || '', K5Top[1]?.team || ''); // Bán kết 1
-        const sf2Score = getScore('SF', K5Top[0]?.team || '', K4Top[1]?.team || ''); // Bán kết 2
-        const finalScore = getScore('FINAL', 'SF1_WINNER', 'SF2_WINNER'); // Chung kết
+        // Lấy kết quả các trận knockout  
+        const sf1Score = getScore('SF', hasK4Results ? (K4Top[0]?.team || '') : '', hasK5Results ? (K5Top[1]?.team || '') : ''); // Bán kết 1
+        const sf2Score = getScore('SF', hasK5Results ? (K5Top[0]?.team || '') : '', hasK4Results ? (K4Top[1]?.team || '') : ''); // Bán kết 2
         
         // Tính người thắng bán kết
-        const sf1Winner = getSemiFinalWinner(K4Top[0]?.team || '', K5Top[1]?.team || '', sf1Score);
-        const sf2Winner = getSemiFinalWinner(K5Top[0]?.team || '', K4Top[1]?.team || '', sf2Score);
+        const sf1Winner = getSemiFinalWinner(sf1Team1, sf1Team2, sf1Score);
+        const sf2Winner = getSemiFinalWinner(sf2Team1, sf2Team2, sf2Score);
+        
+        // Lấy kết quả chung kết với tên đội thực tế
+        const finalScore = getFinalScore(sf1Winner, sf2Winner);
         
         // Tính vô địch
         const champion = getFinalWinner(sf1Winner, sf2Winner, finalScore);
@@ -745,10 +769,10 @@
         }
         
         // Vẽ bán kết
-        box(40, 60, K4Top[0]?.team || '—', 'Nhất K4');
-        box(40, 160, K5Top[1]?.team || '—', 'Nhì K5');
-        box(40, 240, K5Top[0]?.team || '—', 'Nhất K5');
-        box(40, 340, K4Top[1]?.team || '—', 'Nhì K4');
+        box(40, 60, sf1Team1, 'Nhất K4');
+        box(40, 160, sf1Team2, 'Nhì K5');
+        box(40, 240, sf2Team1, 'Nhất K5');
+        box(40, 340, sf2Team2, 'Nhì K4');
         
         // Vẽ đường nối và kết quả bán kết
         line(300, 60, 340, 110);
@@ -765,17 +789,6 @@
         box(640, 200, champion, 'Chung kết');
         
         label(680, 240, '🏆 ' + (champion === 'Chưa đấu' || champion === '—' ? 'Vô địch' : champion));
-        
-        line(300, 240, 340, 290);
-        line(300, 340, 340, 290);
-        box(340, 290, 'Thắng BK2', 'BK 2');
-        
-        // Vẽ chung kết
-        line(600, 110, 640, 200);
-        line(600, 290, 640, 200);
-        box(640, 200, 'Vô địch', 'Chung kết');
-        
-        label(680, 240, '🏆 Vô địch');
       }
 
       $('#toggleEdit').addEventListener('click', () => {
