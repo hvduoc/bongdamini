@@ -57,6 +57,94 @@
 
     /* BRACKET */
     .bracket-label{font-size:.9rem;fill:#245b82}
+    
+    /* Thông tin cách tính điểm */
+    .scoring-info {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .scoring-info h4 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .scoring-info p {
+      margin: 5px 0;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .scoring-info em {
+      opacity: 0.9;
+      font-style: italic;
+    }
+    
+    /* Footer */
+    .footer {
+      background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+      color: white;
+      margin-top: 40px;
+      padding: 30px 20px 20px;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    
+    .footer-section h3 {
+      color: #f39c12;
+      margin: 0 0 15px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .footer-section h4 {
+      color: #ecf0f1;
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .footer-section p {
+      margin: 8px 0;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #bdc3c7;
+    }
+    
+    .footer-section strong {
+      color: #ecf0f1;
+    }
+    
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.2);
+      margin-top: 25px;
+      padding-top: 20px;
+      text-align: center;
+    }
+    
+    .footer-bottom p {
+      margin: 0;
+      color: #bdc3c7;
+      font-size: 14px;
+    }
+    
+    /* Link maps styling */
+    .footer-section a:hover {
+      color: #e67e22 !important;
+      text-decoration: underline !important;
+      transition: color 0.3s ease;
+    }
     .seed{font-weight:800;fill:#0b5ca3}
     .team{font-weight:800;fill:#12324a}
     .connector{stroke:#cfe6ff;stroke-width:2}
@@ -123,7 +211,7 @@
         </div>
         <div class="hero-points">
           <div class="card"><h3>📐 Thể thức 5 người</h3><p>2 hiệp x 15’ (nghỉ 5’). Vòng bảng + loại trực tiếp.</p></div>
-          <div class="card"><h3>📍 Sân bóng An Phúc</h3><p>Địa điểm thi đấu chính thức của giải.</p></div>
+          <div class="card"><h3>📍 Sân bóng An Phúc</h3><p>Địa điểm thi đấu chính thức của giải. <a href="https://maps.app.goo.gl/oBDio7rTfMP7Swpx6" target="_blank" style="color: #e67e22; font-weight: 600; text-decoration: none;">🗺️ Xem bản đồ</a></p></div>
           <div class="card"><h3>🏆 Cúp – Cờ – Huy chương</h3><p>Trao thưởng Nhất, Nhì, Ba cho mỗi khối.</p></div>
         </div>
       </div>
@@ -236,6 +324,15 @@
               <h4>Khối 5</h4>
               <table class="timetable" id="groupB"></table>
             </div>
+          </div>
+          
+          <!-- Thông tin cách tính điểm -->
+          <div class="scoring-info" style="margin-top: 20px;">
+            <h4>📊 Cách tính điểm:</h4>
+            <p>• <strong>Thắng:</strong> 3 điểm</p>
+            <p>• <strong>Hòa:</strong> 1 điểm</p>
+            <p>• <strong>Thua:</strong> 0 điểm</p>
+            <p><em>Xếp hạng theo: Điểm → Hiệu số → Bàn thắng</em></p>
           </div>
         </div>
       </div>
@@ -436,6 +533,7 @@
               </div>
             </div>`;
           }).join('');
+          
           host.innerHTML = matches;
           
           // Thêm event listener cho các input
@@ -446,10 +544,19 @@
               const b = e.target.dataset.b;
               const pos = e.target.dataset.pos;
               const current = getScore(g, a, b);
+              
+              // Lưu giá trị thực tế mà người dùng nhập (không tự động chuyển thành "0")
               if (pos === 'a') {
                 setScore(g, a, b, e.target.value, current[1]);
               } else {
                 setScore(g, a, b, current[0], e.target.value);
+              }
+            });
+            
+            // Tự động điền 0 khi focus ra nếu để trống
+            inp.addEventListener('blur', (e) => {
+              if (e.target.value === '') {
+                e.target.value = '0';
               }
             });
           });
@@ -473,9 +580,9 @@
         const K4Top = groups.K4.slice(0, 2);
         const K5Top = groups.K5.slice(0, 2);
         
-        // Kiểm tra xem đã có kết quả thi đấu chưa (điểm > 0)
-        const hasK4Results = K4Top[0]?.points > 0;
-        const hasK5Results = K5Top[0]?.points > 0;
+        // Kiểm tra xem đã có kết quả thi đấu thực sự chưa (có đội nào đã ghi điểm)
+        const hasK4Results = K4Top.some(team => team.pts > 0);
+        const hasK5Results = K5Top.some(team => team.pts > 0);
         
         // Bán kết: Nhất K4 vs Nhì K5, Nhất K5 vs Nhì K4
         const sf1Team1 = hasK4Results ? (K4Top[0]?.team || '—') : 'Nhất K4'; 
@@ -562,10 +669,19 @@
             const b = e.target.dataset.b;
             const pos = e.target.dataset.pos;
             const current = getScore(g, a, b);
+            
+            // Lưu giá trị thực tế mà người dùng nhập
             if (pos === 'a') {
               setScore(g, a, b, e.target.value, current[1]);
             } else {
               setScore(g, a, b, current[0], e.target.value);
+            }
+          });
+          
+          // Tự động điền 0 khi focus ra nếu để trống
+          inp.addEventListener('blur', (e) => {
+            if (e.target.value === '') {
+              e.target.value = '0';
             }
           });
         });
@@ -592,12 +708,17 @@
         
         // Tính toán từ kết quả các trận đấu
         ['K4','K5'].forEach(g => {
-          pairs(groups[g] || [], g).forEach(([a, b]) => {
+          const fixtures = pairs(groups[g] || [], g);
+          
+          fixtures.forEach(([a, b]) => {
             const [ra, rb] = getScore(g, a, b);
-            const sa = ra === '' ? null : Number(ra);
-            const sb = rb === '' ? null : Number(rb);
             
-            if (sa != null && sb != null && stats[a] && stats[b]) {
+            // Tự động coi giá trị trống là 0 để tính điểm
+            const sa = ra === '' ? 0 : Number(ra);
+            const sb = rb === '' ? 0 : Number(rb);
+            
+            // Chỉ tính điểm khi có ít nhất một bên đã được nhập thực sự (không phải mặc định)
+            if ((ra !== '' || rb !== '') && stats[a] && stats[b]) {
               // Cập nhật số trận đã đấu
               stats[a].played++;
               stats[b].played++;
@@ -627,8 +748,6 @@
               // Tính hiệu số
               stats[a].gd = stats[a].gf - stats[a].ga;
               stats[b].gd = stats[b].gf - stats[b].ga;
-              
-
             }
           });
         });
@@ -688,9 +807,9 @@
         const K4Top = groups.K4.slice(0, 2);
         const K5Top = groups.K5.slice(0, 2);
         
-        // Kiểm tra xem đã có kết quả thi đấu chưa (điểm > 0)
-        const hasK4Results = K4Top[0]?.points > 0;
-        const hasK5Results = K5Top[0]?.points > 0;
+        // Kiểm tra xem đã có kết quả thi đấu thực sự chưa (có đội nào đã ghi điểm)
+        const hasK4Results = K4Top.some(team => team.pts > 0);
+        const hasK5Results = K5Top.some(team => team.pts > 0);
         
         // Xác định tên hiển thị dựa trên kết quả thi đấu
         const sf1Team1 = hasK4Results ? (K4Top[0]?.team || '—') : 'Nhất K4';
@@ -1027,5 +1146,49 @@
       refresh(); setInterval(refresh,4000);
     })();
   </script>
+  
+  <!-- Chân trang Ban tổ chức -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>🏆 Giải Bóng đá Mini - Khối Tiểu Học</h3>
+        <p>Trường Tiểu học Võ Thị Sáu</p>
+        <p><em>"Bóng đá Mini cấp trường" - Ngày 02/11/2025</em></p>
+      </div>
+      <div class="footer-section">
+        <h4>📋 Ban tổ chức:</h4>
+        <p><strong>Hiệu trưởng:</strong> Nguyễn Thái Phong</p>
+        <p><strong>P.Hiệu trưởng:</strong> Phan Nguyễn Thị Thanh Thúy</p>
+        <p><strong>P.Hiệu trưởng:</strong> Lê Thị Minh Tâm</p>
+        <p><strong>Thư ký:</strong> Trần Thị Duyên</p>
+        <p><strong>Y tế:</strong> Nguyễn Thị Phương</p>
+      </div>
+      <div class="footer-section">
+        <h4>� Ủy viên Ban tổ chức:</h4>
+        <p>• Nguyễn Thị Kiều Oanh (GV GDTC)</p>
+        <p>• Trần Thị Lời (GV GDTC)</p>
+        <p>• Nguyễn Trần Tấn Nhân (GV GDTC)</p>
+        <p>• Võ Thị Kim Nga (Tổng phụ trách)</p>
+        <p>• Đỗ Thị Thanh Lan (Bí thư Chi đoàn)</p>
+      </div>
+      <div class="footer-section">
+        <h4>📅 Thông tin giải:</h4>
+        <p><strong>Thời gian:</strong> 02/11/2025 (15:00)</p>
+        <p><strong>Địa điểm:</strong> 
+          <a href="https://maps.app.goo.gl/oBDio7rTfMP7Swpx6" 
+             target="_blank" 
+             style="color: #f39c12; text-decoration: none; font-weight: bold;">
+            🏟️ Sân bóng đá An Phúc
+          </a>
+        </p>
+        <p><strong>Đối tượng:</strong> Học sinh khối Tiểu học</p>
+        <p><strong>Mục tiêu:</strong> Rèn luyện thể chất, đoàn kết lớp học</p>
+        <p><em style="color: #bdc3c7; font-size: 12px;">📍 Bấm vào địa điểm để xem bản đồ và chỉ đường</em></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Trường Tiểu học Võ Thị Sáu. Được thiết kế với ❤️ cho giải đấu bóng đá mini.</p>
+    </div>
+  </footer>
 </body>
 </html>
