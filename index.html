@@ -1135,12 +1135,10 @@
     (function(){
       const gal=document.getElementById('randomGallery');
       const images=[
-        'https://images.unsplash.com/photo-1517481705099-9c63b7a1d829?q=80&w=1200&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=1200&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1200&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?q=80&w=1200&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1531592782745-6c6b6ad21d8f?q=80&w=1200&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1531938716357-248c1df9fc6b?q=80&w=1200&auto=format&fit=crop'
+        'https://free.vector6.com/wp-content/uploads/2020/06/T6-U30-lvmuq2-Vector-Bong-Da-015.jpg',
+        'https://img.lovepik.com/free-png/20211211/lovepik-little-boy-playing-football-png-image_401480453_wh1200.png',
+        'https://cvct3.edu.vn/wp-content/uploads/2013-08-22-09-07-51seo-va-bong-da.jpg',
+        'https://png.pngtree.com/element_pic/17/06/21/67a68937facdaaf72d759a70234f5b6f.jpg',       
       ];
       function refresh(){ gal.innerHTML=''; images.sort(()=>Math.random()-0.5).slice(0,6).forEach(u=>{ const img=new Image(); img.src=u; gal.appendChild(img); }); }
       refresh(); setInterval(refresh,4000);
